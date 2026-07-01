@@ -6,19 +6,8 @@ const ALLOWED_MODELS = new Set([
   'gemini-1.5-pro',
 ]);
 const API_BASE_URL = 'https://your-domain.example.com';
+const DEFAULT_SYSTEM_INSTRUCTION = 'Analyze the input and return the result according to the prompt configuration.';
 
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('Gemini AI')
-    .addItem('Open settings', 'showGeminiSidebar')
-    .addToUi();
-}
-
-function showGeminiSidebar() {
-  const html = HtmlService.createHtmlOutputFromFile('Sidebar')
-    .setTitle('Gemini AI Settings');
-  SpreadsheetApp.getUi().showSidebar(html);
-}
 
 /**
  * Google Sheets custom function.
@@ -30,7 +19,7 @@ function GEMINI_ASK(text, systemInstruction, model) {
 
   const payload = {
     text: prompt,
-    systemInstruction: String(systemInstruction ?? ''),
+    systemInstruction: String(systemInstruction ?? DEFAULT_SYSTEM_INSTRUCTION),
     model: normalizeModel(model),
   };
 
