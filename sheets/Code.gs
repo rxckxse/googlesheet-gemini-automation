@@ -5,7 +5,7 @@ const ALLOWED_MODELS = new Set([
   'gemini-1.5-flash',
   'gemini-1.5-pro',
 ]);
-const API_BASE_URL = 'https://your-domain.example.com';
+const API_BASE_URL = 'https://googlesheet-gemini-automation.vercel.app/';
 const DEFAULT_SYSTEM_INSTRUCTION = 'Analyze the input and return the result according to the prompt configuration.';
 
 
