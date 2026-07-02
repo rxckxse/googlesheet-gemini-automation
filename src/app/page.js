@@ -1,277 +1,92 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
+const codeStyle = {
+  background: '#111827',
+  border: '1px solid #243244',
+  borderRadius: '6px',
+  color: '#7dd3fc',
+  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+  padding: '3px 7px',
+};
+
+const cardStyle = {
+  background: 'rgba(17, 24, 39, 0.76)',
+  border: '1px solid rgba(148, 163, 184, 0.18)',
+  borderRadius: '8px',
+  padding: '22px',
+};
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
 
-  const copyFormula = () => {
-    navigator.clipboard.writeText('=GEMINI.ASK(A2)');
+  const copyFormula = async () => {
+    await navigator.clipboard.writeText('=GEMINI_ASK(A2)');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div style={{
+    <main style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #090d16 0%, #030712 100%)',
-      color: '#f3f4f6',
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '40px 20px',
+      background: '#07111f',
+      color: '#f8fafc',
+      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      padding: '42px 20px',
       boxSizing: 'border-box',
     }}>
-      {/* Container */}
-      <div style={{
-        maxWidth: '850px',
-        width: '100%',
-      }}>
-        {/* Header */}
-        <header style={{
-          textAlign: 'center',
-          marginBottom: '50px',
-        }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
-            width: '72px',
-            height: '72px',
-            borderRadius: '18px',
-            boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)',
-            marginBottom: '20px',
-          }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" fill="white" />
-            </svg>
-          </div>
-          <h1 style={{
-            fontSize: '2.5rem',
-            margin: '0 0 10px 0',
-            fontWeight: '800',
-            background: 'linear-gradient(90deg, #34d399 0%, #22d3ee 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
-            Gemini Excel AI Integration Hub
+      <div style={{ maxWidth: '920px', margin: '0 auto' }}>
+        <header style={{ marginBottom: '34px' }}>
+          <p style={{ color: '#5eead4', fontSize: '0.86rem', fontWeight: 700, margin: '0 0 10px' }}>
+            Google Sheets + Gemini
+          </p>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.6rem)', lineHeight: 1.05, margin: 0 }}>
+            One-cell Gemini automation for Google Sheets
           </h1>
-          <p style={{
-            color: '#9ca3af',
-            fontSize: '1.1rem',
-            margin: '0 auto',
-            maxWidth: '600px',
-            lineHeight: '1.5',
-          }}>
-            Power up your spreadsheets with the Gemini 2.0 and 1.5 models directly inside Excel formulas.
+          <p style={{ color: '#b6c2d2', fontSize: '1rem', lineHeight: 1.65, maxWidth: '680px' }}>
+            Paste the Apps Script function into your sheet, save the backend prompt here, then use one formula argument: the input cell.
           </p>
         </header>
 
-        {/* Steps Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '24px',
-          marginBottom: '40px',
-        }}>
-          
-          {/* Step 1 */}
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '22px' }}>
           <div style={cardStyle}>
-            <div style={stepBadgeStyle}>1</div>
-            <h3 style={stepTitleStyle}>Trust SSL Certificate</h3>
-            <p style={stepTextStyle}>
-              Excel requires HTTPS. Click the button below to open the manifest, then accept the risk/warning in your browser to trust the local self-signed certificate:
+            <div style={{ color: '#5eead4', fontWeight: 800, marginBottom: '12px' }}>1. Deploy backend</div>
+            <p style={{ color: '#cbd5e1', lineHeight: 1.55, margin: 0 }}>
+              Keep <span style={codeStyle}>GEMINI_API_KEY</span> configured on the Next.js server. Optionally set <span style={codeStyle}>GEMINI_SYSTEM_INSTRUCTION</span> as the default saved prompt.
             </p>
-            <a 
-              href="/manifest.xml" 
-              target="_blank" 
-              style={actionButtonStyle}
-            >
-              Authorize Certificate 🔐
+          </div>
+
+          <div style={cardStyle}>
+            <div style={{ color: '#5eead4', fontWeight: 800, marginBottom: '12px' }}>2. Add Apps Script</div>
+            <p style={{ color: '#cbd5e1', lineHeight: 1.55, margin: 0 }}>
+              Copy <span style={codeStyle}>sheets/Code.gs</span> into Extensions &gt; Apps Script for your Google Sheet.
+            </p>
+          </div>
+
+          <div style={cardStyle}>
+            <div style={{ color: '#5eead4', fontWeight: 800, marginBottom: '12px' }}>3. Use formula</div>
+            <p style={{ color: '#cbd5e1', lineHeight: 1.55, margin: 0 }}>
+              Enter <span style={codeStyle}>=GEMINI_ASK(A2)</span>. The backend adds the saved prompt and sends the request to Gemini.
+            </p>
+          </div>
+        </section>
+
+        <section style={{ ...cardStyle, display: 'flex', gap: '14px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ color: '#e2e8f0', fontWeight: 800, marginBottom: '6px' }}>Formula</div>
+            <code style={{ ...codeStyle, display: 'inline-block', padding: '8px 10px' }}>=GEMINI_ASK(A2)</code>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button onClick={copyFormula} style={{ background: '#0d9488', color: 'white', border: 0, borderRadius: '6px', padding: '10px 14px', fontWeight: 700, cursor: 'pointer' }}>
+              {copied ? 'Copied' : 'Copy formula'}
+            </button>
+            <a href="/settings" style={{ background: '#1f2937', color: 'white', borderRadius: '6px', padding: '10px 14px', fontWeight: 700, textDecoration: 'none' }}>
+              Configure prompt
             </a>
           </div>
-
-          {/* Step 2 */}
-          <div style={cardStyle}>
-            <div style={stepBadgeStyle}>2</div>
-            <h3 style={stepTitleStyle}>Sideload Add-in</h3>
-            <p style={stepTextStyle}>
-              Download the manifest file or use its URL, then import it:
-            </p>
-            <ul style={{
-              color: '#d1d5db',
-              fontSize: '0.85rem',
-              paddingLeft: '20px',
-              margin: '10px 0',
-              textAlign: 'left',
-              lineHeight: '1.4'
-            }}>
-              <li>In Excel on the Web: Go to Insert &gt; Add-ins &gt; Upload My Add-in.</li>
-              <li>Select the <code style={codeBlockStyle}>manifest.xml</code> file.</li>
-            </ul>
-            <a 
-              href="/manifest.xml" 
-              download 
-              style={{...actionButtonStyle, background: '#1e293b', border: '1px solid #475569'}}
-            >
-              Save Manifest XML 💾
-            </a>
-          </div>
-
-          {/* Step 3 */}
-          <div style={cardStyle}>
-            <div style={stepBadgeStyle}>3</div>
-            <h3 style={stepTitleStyle}>Write Formulas</h3>
-            <p style={stepTextStyle}>
-              Inside any worksheet, use our custom function to generate text:
-            </p>
-            <div style={{
-              background: '#0f172a',
-              padding: '10px',
-              borderRadius: '6px',
-              border: '1px solid #334155',
-              fontSize: '0.9rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              fontFamily: 'monospace',
-              margin: '12px 0'
-            }}>
-              <span style={{ color: '#38bdf8' }}>=GEMINI.ASK(A2)</span>
-              <button 
-                onClick={copyFormula} 
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#10b981',
-                  cursor: 'pointer',
-                  fontSize: '0.8rem'
-                }}
-              >
-                {copied ? 'Copied' : 'Copy'}
-              </button>
-            </div>
-            <p style={stepTextStyle}>
-              Excel displays <span style={{color: '#fbbf24'}}>#GETTING_DATA</span> while processing.
-            </p>
-          </div>
-
-        </div>
-
-        {/* Links Panel */}
-        <div style={{
-          background: 'rgba(30, 41, 59, 0.4)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: '12px',
-          padding: '24px',
-          textAlign: 'center',
-        }}>
-          <h2 style={{ fontSize: '1.25rem', color: '#38bdf8', marginTop: 0, marginBottom: '10px' }}>
-            ⚙️ Configuration Console
-          </h2>
-          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '20px' }}>
-            You can customize default models, track query history, or test prompts in the settings dashboard:
-          </p>
-          <a 
-            href="/taskpane" 
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
-              color: 'white',
-              textDecoration: 'none',
-              padding: '12px 30px',
-              borderRadius: '8px',
-              fontWeight: '600',
-              boxShadow: '0 4px 15px rgba(16, 185, 129, 0.2)',
-            }}
-          >
-            Open Settings Dashboard
-          </a>
-        </div>
-
-        {/* Developer Notes */}
-        <footer style={{
-          textAlign: 'center',
-          color: '#4b5563',
-          fontSize: '0.8rem',
-          marginTop: '60px',
-          borderTop: '1px solid #1f2937',
-          paddingTop: '20px'
-        }}>
-          Powered by Google Gemini & Next.js App Router • Created by Antigravity AI
-        </footer>
-
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
-
-const cardStyle = {
-  background: 'rgba(17, 24, 39, 0.6)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255, 255, 255, 0.05)',
-  borderRadius: '12px',
-  padding: '24px',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'relative',
-  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
-};
-
-const stepBadgeStyle = {
-  position: 'absolute',
-  top: '-12px',
-  left: '24px',
-  background: '#10b981',
-  color: 'white',
-  fontWeight: '700',
-  width: '28px',
-  height: '28px',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '0.9rem',
-  boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)',
-};
-
-const stepTitleStyle = {
-  fontSize: '1.1rem',
-  fontWeight: '600',
-  margin: '10px 0 12px 0',
-  color: '#f3f4f6',
-};
-
-const stepTextStyle = {
-  fontSize: '0.85rem',
-  color: '#9ca3af',
-  lineHeight: '1.6',
-  margin: '0 0 16px 0',
-  flexGrow: 1,
-};
-
-const actionButtonStyle = {
-  display: 'block',
-  background: '#10b981',
-  color: 'white',
-  textAlign: 'center',
-  textDecoration: 'none',
-  padding: '10px',
-  borderRadius: '6px',
-  fontWeight: '600',
-  fontSize: '0.85rem',
-  transition: 'opacity 0.2s',
-  marginTop: 'auto'
-};
-
-const codeBlockStyle = {
-  background: '#1e293b',
-  padding: '2px 6px',
-  borderRadius: '4px',
-  fontFamily: 'monospace',
-  color: '#34d399',
-};

@@ -1,20 +1,11 @@
-# Google Sheets migration
+# Google Sheets custom function
 
-This folder contains the smallest possible Sheets migration path:
+Paste `Code.gs` into the bound Apps Script project for your Google Sheet.
 
-- Keep the existing Next.js Gemini backend.
-- Add a Google Apps Script custom function that calls the backend.
-- Use a simple Sheets sidebar for instructions/settings.
+Use:
 
-## What to change
+```none
+=GEMINI_ASK(A1)
+```
 
-1. Deploy the Next.js app somewhere Google Sheets can reach over HTTPS.
-2. Replace `API_BASE_URL` in `Code.gs`.
-3. Paste `Code.gs` and `Sidebar.html` into a bound Apps Script project for the spreadsheet.
-4. Reload the sheet and use `=GEMINI_ASK(A1)`.
-
-## Why this is the least-change option
-
-- No rewrite of your Gemini API logic.
-- No Excel/Office add-in manifest.
-- No separate frontend needed for the first working version.
+Only one input is required. The prompt/instructions are handled by the Next.js backend before the Gemini API call.

@@ -1,36 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Google Sheets Gemini automation
 
-## Getting Started
+This project exposes a Next.js backend for a Google Sheets custom function.
 
-First, run the development server:
+## Flow
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Google Sheets calls `=GEMINI_ASK(A2)`.
+2. `sheets/Code.gs` sends `{ text }` to `/api/gemini`.
+3. The backend adds the saved system prompt from `/api/config` or `GEMINI_SYSTEM_INSTRUCTION`.
+4. The backend calls Gemini and returns the generated text.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. Set `GEMINI_API_KEY` in the Next.js server environment.
+2. Deploy the app to an HTTPS URL Google Sheets can reach.
+3. Update `API_BASE_URL` in `sheets/Code.gs` if the deployment URL changes.
+4. In Google Sheets, open Extensions > Apps Script and paste `sheets/Code.gs`.
+5. Save, reload the sheet, and use `=GEMINI_ASK(A2)`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The formula accepts one required argument only: the input text or cell reference.

@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Gemini Excel AI",
-  description: "Generate text with Google Gemini AI directly in Excel cells.",
+  title: "Google Sheets Gemini Automation",
+  description: "Send one Google Sheets cell input through a saved Gemini prompt.",
 };
 
 export default function RootLayout({ children }) {

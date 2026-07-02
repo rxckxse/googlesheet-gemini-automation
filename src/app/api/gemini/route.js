@@ -1,19 +1,14 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
-const DEFAULT_MODEL = 'gemini-3.5-flash';
-const ALLOWED_MODELS = new Set([
-  DEFAULT_MODEL,
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro',
-]);
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
 const ALLOWED_ORIGINS = new Set([
   'https://localhost:3000',
   'http://localhost:3000',
 ]);
 const MAX_TEXT_LENGTH = 20000;
 const MAX_SYSTEM_INSTRUCTION_LENGTH = 4000;
+const DEFAULT_SYSTEM_INSTRUCTION = process.env.GEMINI_SYSTEM_INSTRUCTION || '';
 
 function getCorsHeaders(request) {
   const origin = request.headers.get('origin');
@@ -29,12 +24,8 @@ function getCorsHeaders(request) {
   };
 }
 
-function getRequestedModel(model) {
-  if (typeof model !== 'string' || model.trim() === '') {
-    return DEFAULT_MODEL;
-  }
-
-  return model.trim();
+function getSavedSystemInstruction() {
+  return globalThis.geminiConfig?.systemInstruction || DEFAULT_SYSTEM_INSTRUCTION;
 }
 
 export async function OPTIONS(request) {
@@ -66,7 +57,7 @@ export async function POST(request) {
       );
     }
 
-    const { text, systemInstruction, model } = body;
+    const { text } = body;
 
     if (typeof text !== 'string' || text.trim() === '') {
       return NextResponse.json(
@@ -82,30 +73,23 @@ export async function POST(request) {
       );
     }
 
-    if (typeof systemInstruction === 'string' && systemInstruction.length > MAX_SYSTEM_INSTRUCTION_LENGTH) {
+    const systemInstruction = getSavedSystemInstruction();
+    if (systemInstruction.length > MAX_SYSTEM_INSTRUCTION_LENGTH) {
       return NextResponse.json(
-        { error: `System instruction must be ${MAX_SYSTEM_INSTRUCTION_LENGTH} characters or fewer.` },
+        { error: `Saved system instruction must be ${MAX_SYSTEM_INSTRUCTION_LENGTH} characters or fewer.` },
         { status: 413, headers: corsHeaders }
       );
     }
 
-    const targetModel = getRequestedModel(model);
-    if (!ALLOWED_MODELS.has(targetModel)) {
-      return NextResponse.json(
-        { error: `Unsupported model: ${targetModel}` },
-        { status: 400, headers: corsHeaders }
-      );
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
     const config = {};
-    if (typeof systemInstruction === 'string' && systemInstruction.trim() !== '') {
+    if (systemInstruction.trim() !== '') {
       config.systemInstruction = systemInstruction;
     }
 
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
-      model: targetModel,
-      contents: text,
+      model: DEFAULT_MODEL,
+      contents: text.trim(),
       config,
     });
 
